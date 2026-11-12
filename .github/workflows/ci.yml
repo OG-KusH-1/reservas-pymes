@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [ main ]
+  push:
+    branches: [ main ]
+
+jobs:
+  validate:
+    name: Lint, Test y Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout del repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 12
+
+      - name: Configurar Node.js (v22)
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'pnpm'
+
+      - name: Instalar dependencias
+        run: pnpm install --frozen-lockfile
+
+      - name: Verificar linting
+        run: pnpm lint
+
+      - name: Ejecutar pruebas automatizadas
+        run: pnpm test
+
+      - name: Compilar aplicaciones
+        run: pnpm build
