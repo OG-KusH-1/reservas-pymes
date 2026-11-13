@@ -5,8 +5,15 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1794456795578,
-      "tag": "0000_chubby_sabretooth",
+      "when": 1794610189103,
+      "tag": "0000_esquema_inicial",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1794610191403,
+      "tag": "0001_reservas_antisolape",
       "breakpoints": true
     }
   ]

@@ -1,19 +1,27 @@
 import { Controller, Get } from '@nestjs/common';
-import { HealthService, HealthCheckResponse } from './health.service.js';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { SkipThrottle } from '@nestjs/throttler';
+import { saludSchema, type Salud } from '@portfolio/contracts';
+import { ApiZodResponse } from '../common/zod/api-zod.decorators.js';
+import { HealthService } from './health.service.js';
 
+@ApiTags('Sistema')
 @Controller('health')
 export class HealthController {
   constructor(private readonly healthService: HealthService) {}
 
   /**
-   * Endpoint de monitoreo: GET /api/health
-   * 
-   * ¿Por qué exponer este endpoint?
-   * Brinda observabilidad inmediata para healthchecks de contenedores, balanceadores
-   * y validación de comunicación desde la aplicación web (Next.js).
+   * `GET /api/v1/health`
+   *
+   * Lo consultan los chequeos de salud de los contenedores y la página de
+   * estado de la web. Queda fuera del límite de peticiones porque los
+   * orquestadores lo llaman cada pocos segundos desde la misma IP.
    */
   @Get()
-  async getHealth(): Promise<HealthCheckResponse> {
+  @SkipThrottle()
+  @ApiOperation({ summary: 'Estado de la API y de sus dependencias' })
+  @ApiZodResponse(saludSchema)
+  getHealth(): Promise<Salud> {
     return this.healthService.check();
   }
 }

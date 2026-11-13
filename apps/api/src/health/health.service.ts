@@ -1,49 +1,46 @@
-import { Injectable } from '@nestjs/common';
-import { queryClient } from '../db/index.js';
-
-export interface HealthCheckResponse {
-  status: 'ok' | 'degraded';
-  timestamp: string;
-  uptime: number;
-  environment: string;
-  services: {
-    api: 'healthy';
-    database: 'connected' | 'disconnected';
-  };
-  version: string;
-}
+import { Inject, Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import type { Salud } from '@portfolio/contracts';
+import { VERSION_API } from '../common/version.js';
+import type { Env } from '../config/env.js';
+import type { PgClient } from '../db/client.js';
+import { PG_CLIENT } from '../db/database.module.js';
 
 @Injectable()
 export class HealthService {
-  /**
-   * Ejecuta el chequeo de salud del servicio y de la base de datos.
-   * 
-   * ¿Por qué este chequeo?
-   * Permite a los orquestadores (Docker, Kubernetes) y al frontend verificar
-   * el estado operativo sin lanzar excepciones no controladas si la base de datos
-   * se encuentra en proceso de inicio o migración.
-   */
-  async check(): Promise<HealthCheckResponse> {
-    let dbStatus: 'connected' | 'disconnected' = 'disconnected';
+  constructor(
+    @Inject(PG_CLIENT) private readonly pg: PgClient,
+    private readonly config: ConfigService<Env, true>,
+  ) {}
 
-    try {
-      // Chequeo ligero no bloqueante a PostgreSQL
-      await queryClient`SELECT 1`;
-      dbStatus = 'connected';
-    } catch {
-      dbStatus = 'disconnected';
-    }
+  /**
+   * Comprueba el estado de la API y de sus dependencias.
+   *
+   * Nunca lanza una excepción: si la base de datos no responde devuelve
+   * `status: 'degraded'` con HTTP 200. Así quien consulta puede distinguir
+   * «la API está caída» (no hay respuesta) de «la API vive pero una
+   * dependencia falla», que es justo lo que se necesita durante un arranque
+   * o una migración.
+   *
+   * Al sumar una dependencia crítica (Redis en la Fase 5) agrégala a
+   * `services` aquí y en `saludSchema` de `@portfolio/contracts`.
+   */
+  async check(): Promise<Salud> {
+    const baseDeDatosDisponible = await this.pg`SELECT 1`.then(
+      () => true,
+      () => false,
+    );
 
     return {
-      status: dbStatus === 'connected' ? 'ok' : 'degraded',
+      status: baseDeDatosDisponible ? 'ok' : 'degraded',
       timestamp: new Date().toISOString(),
       uptime: process.uptime(),
-      environment: process.env.NODE_ENV || 'development',
+      environment: this.config.get('NODE_ENV', { infer: true }),
       services: {
         api: 'healthy',
-        database: dbStatus,
+        database: baseDeDatosDisponible ? 'connected' : 'disconnected',
       },
-      version: '0.1.0',
+      version: VERSION_API,
     };
   }
 }

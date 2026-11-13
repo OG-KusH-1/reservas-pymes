@@ -1,18 +1,25 @@
-import { defineConfig } from 'drizzle-kit';
 import * as dotenv from 'dotenv';
+import { defineConfig } from 'drizzle-kit';
 
-// Cargar variables de entorno considerando la raíz del monorepo
-dotenv.config({ path: '../../.env' });
-dotenv.config();
+// drizzle-kit se ejecuta desde `apps/api`; el `.env` vive en la raíz del monorepo.
+dotenv.config({ path: '../../.env', quiet: true });
+dotenv.config({ quiet: true });
 
-// Configuración de Drizzle Kit para PostgreSQL 17
-// Por qué Drizzle Kit: Ofrece generación de migraciones SQL declarativas y sincronización directa
-// sin la sobrecarga ni la complejidad de un motor de ejecución pesado en tiempo de compilación.
+/**
+ * Configuración de drizzle-kit, que aquí se usa solo para GENERAR migraciones
+ * (`pnpm db:generate`) y para explorar la base (`drizzle-kit studio`).
+ *
+ * Las migraciones se APLICAN con `src/db/migrate.ts` (`pnpm db:migrate`), no
+ * con `drizzle-kit push`: `push` sincroniza el esquema sin dejar historial y
+ * se saltaría las migraciones manuales (como la restricción antisolape).
+ *
+ * `generate` no se conecta a la base de datos, por eso la URL puede faltar.
+ */
 export default defineConfig({
   schema: './src/db/schema.ts',
   out: './drizzle',
   dialect: 'postgresql',
   dbCredentials: {
-    url: process.env.DATABASE_URL || 'postgresql://portfolio_user:portfolio_password@localhost:5432/portfolio_reservas',
+    url: process.env.DATABASE_URL ?? '',
   },
 });
