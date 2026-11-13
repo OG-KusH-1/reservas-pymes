@@ -1,22 +1,62 @@
+# Servicios de apoyo para desarrollo local. La API y la web se ejecutan fuera de
+# Docker con `pnpm dev`, para tener recarga en caliente.
+#
+#   pnpm infra:up     levanta todo y espera a que esté saludable
+#   pnpm infra:down   detiene los servicios (los datos se conservan en volúmenes)
+#
+# Los puertos se publican solo en 127.0.0.1: estos servicios usan credenciales
+# de desarrollo y no deben quedar expuestos a la red local.
+#
+# Los valores por defecto coinciden con `.env.example`. Para el despliegue en
+# producción se usa `docker-compose.prod.yml` (Fase 7), no este archivo.
+
+name: agenda
+
 services:
+  # Base de datos principal. Misma versión mayor que producción.
   postgres:
     image: postgres:17-alpine
-    container_name: portfolio-postgres
     restart: unless-stopped
     environment:
-      POSTGRES_USER: ${POSTGRES_USER:-portfolio_user}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-portfolio_password}
-      POSTGRES_DB: ${POSTGRES_DB:-portfolio_reservas}
+      POSTGRES_USER: ${POSTGRES_USER:-agenda}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-agenda_dev}
+      POSTGRES_DB: ${POSTGRES_DB:-agenda}
     ports:
-      - "${POSTGRES_PORT:-5432}:5432"
+      - '127.0.0.1:${POSTGRES_PORT:-5432}:5432'
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-portfolio_user} -d ${POSTGRES_DB:-portfolio_reservas}"]
+      test: ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER:-agenda} -d ${POSTGRES_DB:-agenda}']
       interval: 5s
       timeout: 5s
-      retries: 5
+      retries: 10
+      start_period: 10s
+
+  # Colas de trabajos en segundo plano (recordatorios, Fase 5).
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    # `noeviction`: una cola nunca debe perder trabajos por falta de memoria.
+    command: ['redis-server', '--appendonly', 'yes', '--maxmemory-policy', 'noeviction']
+    ports:
+      - '127.0.0.1:${REDIS_PORT:-6379}:6379'
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  # Servidor de correo de pruebas: captura todo lo que envía la API y lo muestra
+  # en http://localhost:8025. Ningún mensaje sale a Internet.
+  mailpit:
+    image: axllent/mailpit:latest
+    restart: unless-stopped
+    ports:
+      - '127.0.0.1:${SMTP_PORT:-1025}:1025' # SMTP
+      - '127.0.0.1:${MAILPIT_UI_PORT:-8025}:8025' # Interfaz web
 
 volumes:
   postgres_data:
-    driver: local
+  redis_data:

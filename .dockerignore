@@ -1,0 +1,21 @@
+# Todo lo que no debe entrar al contexto de build de Docker: acelera la
+# construcción y evita copiar secretos o artefactos locales a la imagen.
+# Los patrones sin `**/` solo aplican a la raíz del contexto; por eso los
+# archivos de entorno y las claves se excluyen en cualquier carpeta.
+**/node_modules
+**/dist
+**/.next
+**/coverage
+**/test-results
+**/playwright-report
+.git
+.github
+.husky
+docs
+*.md
+**/.env
+**/.env.*
+!.env.example
+**/*.pem
+**/*.key
+**/*.log

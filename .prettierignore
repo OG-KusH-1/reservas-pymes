@@ -1,0 +1,14 @@
+node_modules
+dist
+.next
+coverage
+pnpm-lock.yaml
+# Migraciones y metadatos generados por drizzle-kit: no se editan a mano.
+apps/api/drizzle
+# Componentes generados por la CLI de shadcn/ui: se conservan tal como llegan
+# para que las actualizaciones futuras produzcan diffs limpios.
+apps/web/components/ui
+playwright-report
+test-results
+# Archivo que Next regenera en cada build.
+apps/web/next-env.d.ts

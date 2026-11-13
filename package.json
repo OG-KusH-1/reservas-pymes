@@ -3,16 +3,45 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
+  "engines": {
+    "node": ">=22",
+    "pnpm": ">=12"
+  },
   "scripts": {
-    "dev": "pnpm --parallel --filter \"./apps/*\" dev",
+    "contracts:build": "pnpm --filter @portfolio/contracts build",
+    "dev": "pnpm contracts:build && pnpm --parallel --recursive dev",
     "dev:api": "pnpm --filter @portfolio/api dev",
     "dev:web": "pnpm --filter @portfolio/web dev",
-    "build": "pnpm --recursive --filter \"./apps/*\" build",
-    "test": "pnpm --recursive --filter \"./apps/*\" test",
-    "lint": "pnpm --recursive --filter \"./apps/*\" lint",
+    "build": "pnpm --recursive build",
+    "lint": "pnpm contracts:build && pnpm --recursive lint",
+    "typecheck": "pnpm contracts:build && pnpm --recursive typecheck",
+    "test": "pnpm contracts:build && pnpm --recursive test",
+    "test:int": "pnpm contracts:build && pnpm --filter @portfolio/api test:int",
+    "test:e2e": "pnpm --filter @portfolio/web test:e2e",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "verify": "pnpm format:check && pnpm lint && pnpm typecheck && pnpm test && pnpm build",
     "db:generate": "pnpm --filter @portfolio/api db:generate",
     "db:migrate": "pnpm --filter @portfolio/api db:migrate",
-    "db:seed": "pnpm --filter @portfolio/api db:seed"
+    "db:seed": "pnpm --filter @portfolio/api db:seed",
+    "infra:up": "docker compose up -d --wait",
+    "infra:down": "docker compose down",
+    "prepare": "husky"
   },
-  "packageManager": "pnpm@12.18.0"
+  "lint-staged": {
+    "*.{ts,tsx,js,mjs,json,md,css,yml,yaml}": "prettier --write"
+  },
+  "packageManager": "pnpm@12.18.0",
+  "devDependencies": {
+    "@commitlint/cli": "^21.2.4",
+    "@commitlint/config-conventional": "^21.2.4",
+    "@eslint/js": "^9.39.5",
+    "eslint": "^9.39.5",
+    "eslint-config-prettier": "^10.1.8",
+    "husky": "^9.1.7",
+    "lint-staged": "^17.6.0",
+    "prettier": "^3.10.1",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.72.2"
+  }
 }

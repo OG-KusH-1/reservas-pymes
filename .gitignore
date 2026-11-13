@@ -10,8 +10,8 @@ build/
 
 # Variables de entorno y secretos (Secretos estrictamente fuera del repo)
 .env
-.env.local
-.env.*.local
+.env.*
+!.env.example
 *.pem
 *.key
 
@@ -26,6 +26,9 @@ pnpm-debug.log*
 # Cobertura y testing
 coverage/
 .vitest/
+test-results/
+playwright-report/
+*.tsbuildinfo
 
 # IDEs y SO
 .idea/

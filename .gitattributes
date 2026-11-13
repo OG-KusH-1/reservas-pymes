@@ -1,0 +1,6 @@
+# Finales de línea LF en todo el repositorio, también en Windows, para que
+# Prettier y los scripts de shell de los contenedores se comporten igual.
+* text=auto eol=lf
+*.png binary
+*.ico binary
+*.woff2 binary
