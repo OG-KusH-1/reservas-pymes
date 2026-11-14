@@ -1,180 +1,125 @@
-# Plataforma de Reservas y Recordatorios (Cimientos Monorepo)
+# Agenda — Reservas en línea para negocios de servicios
 
-Sistema integral de gestión de reservas, agendas y recordatorios diseñado específicamente para pequeños negocios de servicios (peluquerías, centros de kinesiología, talleres mecánicos, estética, entre otros).
+Aplicación web multiempresa para que peluquerías, centros de salud y estética,
+talleres y otros negocios de servicios publiquen su agenda, reciban reservas en
+línea y administren su día a día desde un panel.
 
-El proyecto está concebido con una arquitectura **multiempresa (multi-tenant) nativa desde el primer día**, asegurando aislamiento total de datos mediante la inclusión obligatoria de `empresa_id` en todas las entidades relacionales.
+- **Plan y arquitectura:** [docs/PLAN.md](docs/PLAN.md)
+- **Estado del avance:** [docs/ESTADO.md](docs/ESTADO.md)
+- **Reglas para desarrollar (personas y agentes):** [AGENTS.md](AGENTS.md)
 
----
+## Stack
 
-## 🛠️ Stack Tecnológico
+| Capa          | Tecnología                                                               |
+| ------------- | ------------------------------------------------------------------------ |
+| Monorepo      | pnpm workspaces, Node.js 22, TypeScript estricto                         |
+| Contratos     | Zod 4 (`packages/contracts`), compartidos por API y web                  |
+| API           | NestJS 12 (ESM), Drizzle ORM, PostgreSQL 17, pino, OpenAPI               |
+| Web           | Next.js 16 (App Router), React 19, Tailwind 4, shadcn/ui, TanStack Query |
+| Segundo plano | Redis (colas de recordatorios), SMTP (Mailpit en desarrollo)             |
+| Pruebas       | Vitest, Testcontainers (PostgreSQL real), Testing Library, Playwright    |
+| Calidad       | ESLint, Prettier, commitlint, GitHub Actions                             |
 
-El stack replica y consolida los aprendizajes del proyecto de referencia **Tangata**:
-
-- **Gestor de Monorepo:** [pnpm](https://pnpm.io/) (Workspaces) con Node.js 22 LTS.
-- **Backend (`apps/api`):**
-  - [NestJS 12](https://nestjs.com/) configurado en modo nativo ECMAScript Modules (ESM).
-  - [Drizzle ORM](https://orm.drizzle.team/) para acceso a base de datos de alto rendimiento y type-safety estricto.
-  - [PostgreSQL 17](https://www.postgresql.org/) como motor relacional de almacenamiento.
-  - [Vitest](https://vitest.dev/) con SWC para ejecución ultrarrápida de pruebas automatizadas.
-  - [Zod](https://zod.dev/) para validación rigurosa de entradas y contratos en tiempo de ejecución.
-- **Frontend (`apps/web`):**
-  - [Next.js 16](https://nextjs.org/) con App Router y compilación Turbopack.
-  - [React 19](https://react.dev/).
-  - [Tailwind CSS 4](https://tailwindcss.com/) para diseño reactivo de alta fidelidad.
-- **Infraestructura Local:** Docker Compose con PostgreSQL 17 Alpine.
-- **Integración Continua (CI):** GitHub Actions configurado para validar linting, pruebas y compilación en cada Pull Request.
-
----
-
-## 📁 Estructura del Monorepo
+## Estructura
 
 ```text
-├── .github/
-│   └── workflows/
-│       └── ci.yml               # Pipeline de integración continua
-├── apps/
-│   ├── api/                     # Backend NestJS 12 ESM
-│   │   ├── drizzle/             # Migraciones SQL generadas por Drizzle Kit
-│   │   ├── src/
-│   │   │   ├── common/pipes/    # ZodValidationPipe para validación declarativa
-│   │   │   ├── db/              # Conexión Drizzle, esquema multiempresa y seed
-│   │   │   ├── health/          # Endpoint GET /api/health y pruebas Vitest
-│   │   │   ├── app.module.ts    # Módulo raíz de NestJS
-│   │   │   └── main.ts          # Bootstrap de la aplicación con CORS y prefijo /api
-│   │   ├── drizzle.config.ts    # Configuración de Drizzle Kit
-│   │   ├── tsconfig.json        # Configuración TypeScript NodeNext ESM
-│   │   └── vitest.config.ts     # Configuración de Vitest con plugin SWC
-│   └── web/                     # Frontend Next.js 16
-│       ├── app/
-│       │   ├── globals.css      # Estilos globales con Tailwind CSS 4 (@import "tailwindcss")
-│       │   ├── layout.tsx       # Layout principal
-│       │   ├── page.tsx         # Dashboard de monitoreo que consume /api/health
-│       │   └── page.spec.ts     # Pruebas de configuración en Vitest
-│       └── next.config.ts       # Configuración de Next.js
-├── docs/
-│   └── adr/
-│       └── 0001-stack.md        # Registro de Decisión Arquitectónica del stack
-├── .env.example                 # Plantilla de variables de entorno sin secretos
-├── .gitignore                   # Exclusión estricta de credenciales, dist y dependencias
-├── AGENTS.md                    # Normas para agentes y desarrolladores
-├── docker-compose.yml           # Servicio local de PostgreSQL 17 Alpine
-├── package.json                 # Scripts raíz del monorepo
-├── pnpm-workspace.yaml          # Definición de paquetes del workspace pnpm
-└── README.md                    # Documentación principal del proyecto
+apps/
+  api/                 API REST (/api/v1)
+    drizzle/           Migraciones SQL
+    src/
+      common/          Errores, validación Zod, utilidades transversales
+      config/          Variables de entorno validadas
+      db/              Esquema, conexión, migraciones y seed
+      health/          Chequeo de salud
+      mail/            Puerto de correo y adaptador SMTP
+    test/              Infraestructura de pruebas de integración
+  web/                 Panel y página pública
+    app/               Rutas: (marketing), (auth), (panel), (publico)
+    components/        Componentes propios y de shadcn/ui (ui/)
+    hooks/             Hooks de datos
+    lib/               Cliente de API, formato, rutas
+    e2e/               Pruebas de extremo a extremo
+packages/
+  contracts/           Esquemas Zod y tipos compartidos
+docs/                  Plan, estado, modelo de datos, API, ADR y tareas
 ```
 
----
+## Puesta en marcha
 
-## 🚀 Cómo Levantarlo Paso a Paso
-
-### 1. Prerrequisitos
-
-- **Node.js:** Versión `>= 22.0.0`
-- **pnpm:** Versión `>= 10.0.0` (o `12.x`)
-- **Docker & Docker Compose:** Activo y corriendo en el sistema
-
-### 2. Configuración de Variables de Entorno
-
-Copia el archivo de ejemplo a tu archivo `.env` local:
-
-```bash
-cp .env.example .env
-```
-
-> **Nota de Seguridad:** Nunca agregues secretos reales ni subas el archivo `.env` al control de versiones.
-
-### 3. Levantar la Base de Datos
-
-Inicia el contenedor de PostgreSQL 17 en segundo plano:
-
-```bash
-docker compose up -d
-```
-
-Puedes verificar el estado del contenedor con:
-
-```bash
-docker compose ps
-```
-
-### 4. Instalar Dependencias
-
-Desde la raíz del repositorio, ejecuta:
+Requisitos: Node.js 22 o superior, pnpm 12 y Docker.
 
 ```bash
 pnpm install
+cp .env.example .env     # valores listos para desarrollo local
+pnpm infra:up            # PostgreSQL, Redis y Mailpit
+pnpm db:migrate          # crea las tablas
+pnpm db:seed             # carga una empresa de demostración
+pnpm dev                 # API en :4000 y web en :3000
 ```
 
-### 5. Generar y Aplicar Migraciones
+| Qué                     | Dónde                          |
+| ----------------------- | ------------------------------ |
+| Web                     | http://localhost:3000          |
+| Estado del sistema      | http://localhost:3000/estado   |
+| API                     | http://localhost:4000/api/v1   |
+| Documentación de la API | http://localhost:4000/api/docs |
+| Correos capturados      | http://localhost:8025          |
 
-Genera los archivos SQL del esquema y sincroniza la base de datos:
+## Comandos
+
+| Comando            | Qué hace                                                     |
+| ------------------ | ------------------------------------------------------------ |
+| `pnpm dev`         | API y web con recarga en caliente                            |
+| `pnpm verify`      | Formato, lint, tipos, pruebas unitarias y build              |
+| `pnpm test`        | Pruebas unitarias                                            |
+| `pnpm test:int`    | Pruebas de integración de la API (requiere Docker)           |
+| `pnpm test:e2e`    | Pruebas E2E (requiere `pnpm build` y el navegador instalado) |
+| `pnpm format`      | Aplica Prettier                                              |
+| `pnpm db:generate` | Genera una migración desde los cambios del esquema           |
+| `pnpm db:migrate`  | Aplica las migraciones pendientes                            |
+| `pnpm db:seed`     | Datos de demostración (`-- --reset` para recrearlos)         |
+| `pnpm infra:up`    | Levanta los servicios de apoyo en Docker                     |
+| `pnpm infra:down`  | Los detiene                                                  |
+
+Primera ejecución de las pruebas E2E:
+`pnpm --filter @portfolio/web exec playwright install chromium`.
+
+## Imágenes de producción
 
 ```bash
-# Generar migraciones basadas en src/db/schema.ts
-pnpm db:generate
-
-# Aplicar las migraciones a la base de datos en PostgreSQL
-pnpm db:migrate
+docker build -f apps/api/Dockerfile -t agenda-api .
+docker build -f apps/web/Dockerfile --build-arg API_URL=http://api:4000 -t agenda-web .
 ```
 
-### 6. Poblar Datos de Prueba (Seed Opcional)
+La API aplica sus migraciones al arrancar. `API_URL` es la dirección interna
+de la API vista desde el contenedor de la web y se fija al construir.
 
-Para cargar un negocio demo ("Barbería & Spa El Portal"), servicios, profesionales, horarios y citas:
+## Repositorio
+
+El remoto es `reservas-pymes`. Para enlazarlo y subir por primera vez:
 
 ```bash
-pnpm db:seed
+git remote add origin <URL de reservas-pymes>
+git push -u origin main
 ```
 
-### 7. Ejecutar en Modo Desarrollo
+Los hooks de git (Husky) aplican Prettier a los archivos del commit y validan
+el mensaje con commitlint. `pnpm install` los activa.
 
-Levanta tanto la API como la interfaz web en paralelo:
+## Desarrollo con agentes
 
-```bash
-pnpm dev
-```
+El proyecto avanza por oleadas de tareas que ejecutan agentes de Antigravity.
+El ciclo completo (preparar, ejecutar, revisar) y los mensajes para lanzar
+cada agente están en [docs/tareas/README.md](docs/tareas/README.md).
 
-O levanta cada aplicación por separado según lo requieras:
+## Documentación
 
-- **API únicamente:** `pnpm dev:api` (disponible en `http://localhost:4000/api/health`)
-- **Web únicamente:** `pnpm dev:web` (disponible en `http://localhost:3000`)
-
----
-
-## 📜 Scripts Disponibles en la Raíz
-
-| Comando | Descripción |
-| :--- | :--- |
-| `pnpm dev` | Inicia simultáneamente `apps/api` y `apps/web` en modo desarrollo |
-| `pnpm dev:api` | Inicia solo el backend NestJS con recarga en caliente vía `tsx` |
-| `pnpm dev:web` | Inicia solo el frontend Next.js 16 con Turbopack |
-| `pnpm test` | Ejecuta las suites de prueba en todas las aplicaciones con Vitest |
-| `pnpm lint` | Ejecuta el linter (ESLint) en todas las aplicaciones |
-| `pnpm build` | Compila tanto la API como la aplicación Web para producción |
-| `pnpm db:generate` | Genera las migraciones SQL a partir de los esquemas Drizzle |
-| `pnpm db:migrate` | Sincroniza y aplica el esquema sobre la base de datos PostgreSQL |
-| `pnpm db:seed` | Inserta datos de prueba multiempresa iniciales |
-
----
-
-## 🗄️ Esquema Relacional Base (Multiempresa)
-
-El sistema define 5 tablas nucleares con clave foránea `empresa_id` para garantizar segregación estricta de datos:
-
-1. **`empresas`**: Registro raíz del comercio o prestador (nombre, slug único para URLs, RUT, teléfono, email).
-2. **`servicios`**: Prestaciones ofrecidas (duración en minutos, precio, estado activo, pertenencia por `empresa_id`).
-3. **`profesionales`**: Especialistas o prestadores de servicio vinculados a la empresa (`empresa_id`).
-4. **`horarios`**: Franjas horarias de disponibilidad semanal recurrente por profesional (`empresa_id`, `profesional_id`, `dia_semana`, `hora_inicio`, `hora_fin`).
-5. **`reservas`**: Citas agendadas por clientes (`empresa_id`, `servicio_id`, `profesional_id`, fechas con zona horaria, datos del cliente y estado del ciclo de vida).
-
----
-
-## 📌 Enfoque de Fases y Roadmap
-
-Siguiendo el principio aplicado en **Tangata**, este hito establece exclusivamente los cimientos arquitectónicos, infraestructura y modelo de datos.
-
-- **Fase Actual (Cimientos):** Estructura monorepo, Docker, base de datos relacional multiempresa, salud del sistema y pipeline de CI.
-- **Fases Siguientes:**
-  - Lógica de negocio de disponibilidad de turnos.
-  - Autenticación y roles de usuario.
-  - Integración de notificaciones y recordatorios por **WhatsApp** (al final del ciclo).
-  - Pasarela de **Pagos en línea** (al final del ciclo).
+| Documento                                    | Contenido                                      |
+| -------------------------------------------- | ---------------------------------------------- |
+| [docs/PLAN.md](docs/PLAN.md)                 | Producto, arquitectura, fases y tareas         |
+| [docs/ESTADO.md](docs/ESTADO.md)             | Avance, decisiones vigentes y pendientes       |
+| [docs/MODELO_DATOS.md](docs/MODELO_DATOS.md) | Diseño de la base de datos                     |
+| [docs/API.md](docs/API.md)                   | Convenciones de la API                         |
+| [docs/adr/](docs/adr/)                       | Decisiones de arquitectura                     |
+| [docs/tareas/](docs/tareas/)                 | Tareas, BACKLOG y ciclo de trabajo con agentes |
+| [docs/REVISION.md](docs/REVISION.md)         | Guía del revisor                               |
