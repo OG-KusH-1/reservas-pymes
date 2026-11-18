@@ -1,6 +1,6 @@
 'use client';
 
-import { ChevronDown, LogOut } from 'lucide-react';
+import { Building2, Check, ChevronDown, LogOut } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { SelectorTema } from '@/components/layout/selector-tema';
@@ -15,6 +15,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { useCambiarEmpresaActiva, useEmpresasUsuario } from '@/hooks/use-equipo';
 import { useCerrarSesion } from '@/hooks/use-sesion';
 import { mensajeDeError } from '@/lib/api/errores';
 import { RUTAS } from '@/lib/rutas';
@@ -34,17 +35,30 @@ function obtenerIniciales(nombre: string): string {
 /**
  * Menú desplegable de la cuenta activa en la cabecera del panel.
  *
- * Muestra nombre, correo, empresa y rol actuales, integra `SelectorTema` y
- * permite cerrar sesión llamando a `useCerrarSesion()` (que limpia la caché de
- * TanStack Query) para luego redirigir a `/ingresar`.
- *
- * Se mantiene desacoplado del selector de empresa y del aviso de correo sin
- * verificar, que se incorporarán en T16.
+ * Muestra nombre, correo, empresa y rol actuales, permite cambiar de empresa
+ * activa cuando el usuario pertenece a más de una (`useEmpresasUsuario()`),
+ * integra `SelectorTema` y permite cerrar sesión llamando a
+ * `useCerrarSesion()` (que limpia la caché de TanStack Query) para luego
+ * redirigir a `/ingresar`.
  */
 export function MenuUsuario() {
   const sesion = useSesionPanel();
   const router = useRouter();
   const cerrarSesion = useCerrarSesion();
+  const { data: empresas } = useEmpresasUsuario();
+  const cambiarEmpresa = useCambiarEmpresaActiva();
+
+  const tieneMultiplesEmpresas = Boolean(empresas && empresas.length > 1);
+
+  async function manejarCambiarEmpresa(empresaId: string, nombreEmpresa: string) {
+    try {
+      await cambiarEmpresa.mutateAsync({ empresaId });
+      toast.success(`Cambiaste a ${nombreEmpresa}`);
+      router.refresh();
+    } catch (error) {
+      toast.error(mensajeDeError(error));
+    }
+  }
 
   async function manejarCerrarSesion() {
     try {
@@ -90,6 +104,37 @@ export function MenuUsuario() {
             </span>
           </div>
         </DropdownMenuLabel>
+        {tieneMultiplesEmpresas && empresas ? (
+          <>
+            <DropdownMenuSeparator />
+            <DropdownMenuLabel className="text-muted-foreground text-xs font-medium">
+              Empresas
+            </DropdownMenuLabel>
+            {empresas.map((empresa) => {
+              const esActiva = empresa.activa || empresa.id === sesion.empresa.id;
+              return (
+                <DropdownMenuItem
+                  key={empresa.id}
+                  disabled={esActiva || cambiarEmpresa.isPending}
+                  onSelect={() => {
+                    void manejarCambiarEmpresa(empresa.id, empresa.nombre);
+                  }}
+                >
+                  <Building2 className="text-muted-foreground size-4 shrink-0" aria-hidden />
+                  <div className="flex min-w-0 flex-1 flex-col">
+                    <span className="truncate text-sm">{empresa.nombre}</span>
+                    <span className="text-muted-foreground text-xs">
+                      {ETIQUETAS_ROL[empresa.rol]}
+                    </span>
+                  </div>
+                  {esActiva ? (
+                    <Check className="text-primary size-4 shrink-0" aria-label="Activa" />
+                  ) : null}
+                </DropdownMenuItem>
+              );
+            })}
+          </>
+        ) : null}
         <DropdownMenuSeparator />
         <div className="flex items-center justify-between px-2 py-1.5 text-sm">
           <span>Tema</span>
