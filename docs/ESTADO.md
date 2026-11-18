@@ -26,7 +26,7 @@
 | Fase                          | Estado                | Notas                                        |
 | ----------------------------- | --------------------- | -------------------------------------------- |
 | 0 Infraestructura             | **Terminada** (T1–T9) | Verificación completa en verde; ver bitácora |
-| 1 Identidad y empresa         | **En curso**          | O1 aprobada (T10, T11)                       |
+| 1 Identidad y empresa         | **En curso**          | O1–O2 aprobadas (T10–T14)                    |
 | 2 Catálogo y disponibilidad   | Pendiente             | —                                            |
 | 3 Reservas y agenda           | Pendiente             | —                                            |
 | 4 Reserva pública             | Pendiente             | —                                            |
@@ -41,15 +41,15 @@
 | ---------------------------------------------------------- | ----------- | ------------------- |
 | T10 API de autenticación (O1)                              | Antigravity | aprobada            |
 | T11 Web: registro e ingreso (O1)                           | Antigravity | aprobada            |
-| T12 API de miembros, invitaciones y cambio de empresa (O2) | Antigravity | asignada            |
-| T13 API de verificación y recuperación (O2)                | Antigravity | asignada            |
-| T14 Web: estructura del panel (O2)                         | Antigravity | asignada            |
+| T12 API de miembros, invitaciones y cambio de empresa (O2) | Antigravity | aprobada            |
+| T13 API de verificación y recuperación (O2)                | Antigravity | aprobada            |
+| T14 Web: estructura del panel (O2)                         | Antigravity | aprobada            |
 | T15, T16 (O3)                                              | Antigravity | pendiente (BACKLOG) |
 
 ## Pendientes y avisos
 
-- **Siguiente paso:** ejecutar en paralelo la oleada F1-O2 (`T12`, `T13`, `T14`)
-  según `docs/tareas/README.md` (paso 2).
+- **Siguiente paso:** preparar la oleada F1-O3 (`T15`, `T16`)
+  según `docs/tareas/README.md` (paso 1).
 - **Remoto sin configurar.** El repositorio local tiene el historial y los
   commits de la Fase 0, pero falta enlazarlo con `reservas-pymes` y hacer el
   primer `push` (comandos en el `README.md`, sección «Repositorio»).
@@ -81,3 +81,4 @@
 | 2026-11-13 | Repositorio propio con el historial previo; hooks de git activados; protocolo autónomo para Antigravity (preparador, ejecutor, revisor) y BACKLOG de T12–T45.                                                                                                                              |
 | 2026-11-18 | Revisión de la oleada F1-O1 (T10 y T11): ambas aprobadas sin críticos ni importantes.                                                                                                                                                                                                      |
 | 2026-11-18 | Preparada la oleada F1-O2 (T12, T13, T14): contratos `miembros.ts` y `cuenta.ts`, rutas, módulos base en `AppModule` y `@Publico()` en `errores-y-validacion.int-spec.ts`.                                                                                                                 |
+| 2026-11-18 | Revisión de la oleada F1-O2 (T12, T13 y T14): todas aprobadas sin críticos ni importantes.                                                                                                                                                                                                 |
