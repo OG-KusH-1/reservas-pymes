@@ -4,7 +4,7 @@
 > proyecto, qué está decidido y qué falta. El diseño completo está en
 > `docs/PLAN.md`; las reglas de trabajo, en `AGENTS.md`.
 
-**Última actualización:** 2026-11-18 · **Fase en curso:** 1 (Identidad y empresa) · **Repositorio:** `reservas-pymes` (rama `main`)
+**Última actualización:** 2026-11-18 · **Fase en curso:** 2 (Catálogo y disponibilidad) · **Repositorio:** `reservas-pymes` (rama `main`)
 
 ## Decisiones vigentes
 
@@ -23,17 +23,17 @@
 
 ## Avance por fase
 
-| Fase                          | Estado                | Notas                                        |
-| ----------------------------- | --------------------- | -------------------------------------------- |
-| 0 Infraestructura             | **Terminada** (T1–T9) | Verificación completa en verde; ver bitácora |
-| 1 Identidad y empresa         | **En curso**          | O1–O2 aprobadas (T10–T14)                    |
-| 2 Catálogo y disponibilidad   | Pendiente             | —                                            |
-| 3 Reservas y agenda           | Pendiente             | —                                            |
-| 4 Reserva pública             | Pendiente             | —                                            |
-| 5 Notificaciones              | Pendiente             | —                                            |
-| 6 Gestión                     | Pendiente             | —                                            |
-| 7 Endurecimiento y despliegue | Pendiente             | —                                            |
-| 8 WhatsApp y pagos            | Posterior             | Sin tareas definidas                         |
+| Fase                          | Estado                  | Notas                                           |
+| ----------------------------- | ----------------------- | ----------------------------------------------- |
+| 0 Infraestructura             | **Terminada** (T1–T9)   | Verificación completa en verde; ver bitácora    |
+| 1 Identidad y empresa         | **Terminada** (T10–T16) | O1–O3 aprobadas; verificación completa en verde |
+| 2 Catálogo y disponibilidad   | Pendiente               | —                                               |
+| 3 Reservas y agenda           | Pendiente               | —                                               |
+| 4 Reserva pública             | Pendiente               | —                                               |
+| 5 Notificaciones              | Pendiente               | —                                               |
+| 6 Gestión                     | Pendiente               | —                                               |
+| 7 Endurecimiento y despliegue | Pendiente               | —                                               |
+| 8 WhatsApp y pagos            | Posterior               | Sin tareas definidas                            |
 
 ## Fase 1: tareas y ejecutor
 
@@ -44,13 +44,13 @@
 | T12 API de miembros, invitaciones y cambio de empresa (O2)      | Antigravity | aprobada |
 | T13 API de verificación y recuperación (O2)                     | Antigravity | aprobada |
 | T14 Web: estructura del panel (O2)                              | Antigravity | aprobada |
-| T15 API y web de configuración de la empresa (O3)               | Antigravity | asignada |
-| T16 Web: equipo, invitaciones, recuperación y verificación (O3) | Antigravity | asignada |
+| T15 API y web de configuración de la empresa (O3)               | Antigravity | aprobada |
+| T16 Web: equipo, invitaciones, recuperación y verificación (O3) | Antigravity | aprobada |
 
 ## Pendientes y avisos
 
-- **Siguiente paso:** ejecutar en paralelo la oleada F1-O3 (`T15`, `T16`)
-  según `docs/tareas/README.md` (paso 2).
+- **Siguiente paso:** preparar la oleada **F2-O1** según `docs/tareas/README.md`
+  (paso 1) y `docs/tareas/BACKLOG.md`.
 - **Remoto sin configurar.** El repositorio local tiene el historial y los
   commits de la Fase 0, pero falta enlazarlo con `reservas-pymes` y hacer el
   primer `push` (comandos en el `README.md`, sección «Repositorio»).
@@ -64,6 +64,10 @@
 - **Menores de F1-O1:** añadir prueba de `429` para `POST /auth/ingresar` en
   `apps/api/test/auth.int-spec.ts` y prueba E2E de flujo completo contra la API
   real cuando el entorno E2E levante ambos servidores.
+- **Menores de F1-O3:** añadir prueba unitaria de error al cambiar de empresa en
+  `apps/web/components/panel/menu-usuario.spec.tsx` y de cambio de rol en
+  `apps/web/components/equipo/gestion-equipo.spec.tsx`; cubrir
+  `/panel/configuracion` en E2E cuando el entorno E2E levante ambos servidores.
 
 ## Cambios respecto del plan aprobado
 
@@ -84,3 +88,4 @@
 | 2026-11-18 | Preparada la oleada F1-O2 (T12, T13, T14): contratos `miembros.ts` y `cuenta.ts`, rutas, módulos base en `AppModule` y `@Publico()` en `errores-y-validacion.int-spec.ts`.                                                                                                                 |
 | 2026-11-18 | Revisión de la oleada F1-O2 (T12, T13 y T14): todas aprobadas sin críticos ni importantes.                                                                                                                                                                                                 |
 | 2026-11-18 | Preparada la oleada F1-O3 (T15, T16): contrato `empresa.ts`, módulo base `EmpresaModule` en `AppModule` y fichas `T15.md` y `T16.md`.                                                                                                                                                      |
+| 2026-11-18 | Revisión de la oleada F1-O3 (T15 y T16): ambas aprobadas sin críticos ni importantes. Fase 1 (Identidad y empresa) terminada.                                                                                                                                                              |
