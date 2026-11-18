@@ -1,4 +1,7 @@
-import { randomUUID } from 'node:crypto';
+import { randomBytes, randomUUID } from 'node:crypto';
+import type { RolMiembro } from '@portfolio/contracts';
+import { COOKIE_SESION } from '../src/app.setup.js';
+import { hashTokenSesion } from '../src/auth/session.service.js';
 import type { Database } from '../src/db/client.js';
 import {
   clientes,
@@ -7,8 +10,10 @@ import {
   profesionales,
   reservas,
   servicios,
+  sesiones,
   usuarios,
 } from '../src/db/schema.js';
+import type { AppDePrueba } from './app.js';
 
 /**
  * Fábricas de datos para pruebas de integración.
@@ -141,4 +146,36 @@ export async function crearReserva(
       })
       .returning(),
   );
+}
+
+/**
+ * Crea empresa, usuario, membresía y sesión directamente en la base de datos
+ * para autenticar peticiones en pruebas sin consumir el límite de intentos de
+ * los endpoints de autenticación.
+ */
+export async function crearSesionDePrueba(
+  prueba: Pick<AppDePrueba, 'db'>,
+  opciones: { rol?: RolMiembro } = {},
+) {
+  const empresa = await crearEmpresa(prueba.db);
+  const usuario = await crearUsuario(prueba.db);
+  await crearMiembro(prueba.db, {
+    empresaId: empresa.id,
+    usuarioId: usuario.id,
+    rol: opciones.rol ?? 'dueno',
+  });
+
+  const token = randomBytes(32).toString('base64url');
+  await prueba.db.insert(sesiones).values({
+    usuarioId: usuario.id,
+    empresaId: empresa.id,
+    tokenHash: hashTokenSesion(token),
+    expiraEn: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+  });
+
+  return {
+    empresa,
+    usuario,
+    cookie: `${COOKIE_SESION}=${token}`,
+  };
 }

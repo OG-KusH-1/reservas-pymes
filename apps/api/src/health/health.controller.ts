@@ -2,6 +2,7 @@ import { Controller, Get } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { SkipThrottle } from '@nestjs/throttler';
 import { saludSchema, type Salud } from '@portfolio/contracts';
+import { Publico } from '../auth/auth.decorators.js';
 import { ApiZodResponse } from '../common/zod/api-zod.decorators.js';
 import { HealthService } from './health.service.js';
 
@@ -18,6 +19,7 @@ export class HealthController {
    * orquestadores lo llaman cada pocos segundos desde la misma IP.
    */
   @Get()
+  @Publico()
   @SkipThrottle()
   @ApiOperation({ summary: 'Estado de la API y de sus dependencias' })
   @ApiZodResponse(saludSchema)

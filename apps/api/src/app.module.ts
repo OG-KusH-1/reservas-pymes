@@ -4,6 +4,10 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_FILTER, APP_GUARD, APP_PIPE } from '@nestjs/core';
 import { ThrottlerGuard, ThrottlerModule, seconds } from '@nestjs/throttler';
 import { LoggerModule } from 'nestjs-pino';
+import { AuthModule } from './auth/auth.module.js';
+import { OriginGuard } from './auth/origin.guard.js';
+import { RolesGuard } from './auth/roles.guard.js';
+import { SessionGuard } from './auth/session.guard.js';
 import { AllExceptionsFilter } from './common/errors/all-exceptions.filter.js';
 import { ZodValidationPipe } from './common/zod/zod-validation.pipe.js';
 import { RUTAS_ENV, validarEntorno, type AppConfig } from './config/env.js';
@@ -91,11 +95,18 @@ import { MailModule } from './mail/mail.module.js';
     DatabaseModule,
     MailModule,
     HealthModule,
+    AuthModule,
   ],
   providers: [
-    // Límite global de peticiones por IP. Los endpoints sensibles (inicio de
-    // sesión, reserva pública) deben endurecerlo con `@Throttle()`.
+    // Orden estricto de los guards globales:
+    //  1. Límite de peticiones por IP (antes de cualquier trabajo de BD o hash).
+    //  2. Validación de `Origin` en mutaciones (defensa CSRF).
+    //  3. Autenticación por cookie de sesión (salvo rutas `@Publico()`).
+    //  4. Autorización por rol (`@Roles(...)`).
     { provide: APP_GUARD, useClass: ThrottlerGuard },
+    { provide: APP_GUARD, useClass: OriginGuard },
+    { provide: APP_GUARD, useClass: SessionGuard },
+    { provide: APP_GUARD, useClass: RolesGuard },
     { provide: APP_PIPE, useClass: ZodValidationPipe },
     { provide: APP_FILTER, useClass: AllExceptionsFilter },
   ],
