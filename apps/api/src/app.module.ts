@@ -12,8 +12,10 @@ import { AllExceptionsFilter } from './common/errors/all-exceptions.filter.js';
 import { ZodValidationPipe } from './common/zod/zod-validation.pipe.js';
 import { RUTAS_ENV, validarEntorno, type AppConfig } from './config/env.js';
 import { DatabaseModule } from './db/database.module.js';
+import { CuentaModule } from './cuenta/cuenta.module.js';
 import { HealthModule } from './health/health.module.js';
 import { MailModule } from './mail/mail.module.js';
+import { MiembrosModule } from './miembros/miembros.module.js';
 
 /**
  * Módulo raíz de la API.
@@ -96,6 +98,8 @@ import { MailModule } from './mail/mail.module.js';
     MailModule,
     HealthModule,
     AuthModule,
+    MiembrosModule,
+    CuentaModule,
   ],
   providers: [
     // Orden estricto de los guards globales:

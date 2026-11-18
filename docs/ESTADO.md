@@ -37,18 +37,19 @@
 
 ## Fase 1: tareas y ejecutor
 
-| Tarea                            | Ejecutor    | Estado              |
-| -------------------------------- | ----------- | ------------------- |
-| T10 API de autenticación (O1)    | Antigravity | aprobada            |
-| T11 Web: registro e ingreso (O1) | Antigravity | aprobada            |
-| T12, T13, T14 (O2)               | Antigravity | pendiente (BACKLOG) |
-| T15, T16 (O3)                    | Antigravity | pendiente (BACKLOG) |
+| Tarea                                                      | Ejecutor    | Estado              |
+| ---------------------------------------------------------- | ----------- | ------------------- |
+| T10 API de autenticación (O1)                              | Antigravity | aprobada            |
+| T11 Web: registro e ingreso (O1)                           | Antigravity | aprobada            |
+| T12 API de miembros, invitaciones y cambio de empresa (O2) | Antigravity | asignada            |
+| T13 API de verificación y recuperación (O2)                | Antigravity | asignada            |
+| T14 Web: estructura del panel (O2)                         | Antigravity | asignada            |
+| T15, T16 (O3)                                              | Antigravity | pendiente (BACKLOG) |
 
 ## Pendientes y avisos
 
-- **Siguiente paso:** preparar la oleada F1-O2 (T12, T13, T14) según
-  `docs/tareas/README.md` (paso 1), incluyendo `@Publico()` en el controlador
-  de `apps/api/test/errores-y-validacion.int-spec.ts`.
+- **Siguiente paso:** ejecutar en paralelo la oleada F1-O2 (`T12`, `T13`, `T14`)
+  según `docs/tareas/README.md` (paso 2).
 - **Remoto sin configurar.** El repositorio local tiene el historial y los
   commits de la Fase 0, pero falta enlazarlo con `reservas-pymes` y hacer el
   primer `push` (comandos en el `README.md`, sección «Repositorio»).
@@ -58,9 +59,6 @@
   `docker-compose.yml`; solo afecta al desarrollo local.
 - **Acciones de GitHub fijadas por etiqueta**, no por SHA, y el CI no
   construye las imágenes Docker. Revisar en la Fase 7.
-- **Al integrar T10:** las pruebas de `errores-y-validacion.int-spec.ts` usan
-  un controlador sin sesión; habrá que marcarlo `@Publico()` cuando exista el
-  guard global.
 - **Política de contenido (CSP)** de la web: pendiente para la Fase 7.
 - **Menores de F1-O1:** añadir prueba de `429` para `POST /auth/ingresar` en
   `apps/api/test/auth.int-spec.ts` y prueba E2E de flujo completo contra la API
@@ -82,3 +80,4 @@
 | 2026-11-13 | Preparada la oleada F1-O1 (T10, T11).                                                                                                                                                                                                                                                      |
 | 2026-11-13 | Repositorio propio con el historial previo; hooks de git activados; protocolo autónomo para Antigravity (preparador, ejecutor, revisor) y BACKLOG de T12–T45.                                                                                                                              |
 | 2026-11-18 | Revisión de la oleada F1-O1 (T10 y T11): ambas aprobadas sin críticos ni importantes.                                                                                                                                                                                                      |
+| 2026-11-18 | Preparada la oleada F1-O2 (T12, T13, T14): contratos `miembros.ts` y `cuenta.ts`, rutas, módulos base en `AppModule` y `@Publico()` en `errores-y-validacion.int-spec.ts`.                                                                                                                 |

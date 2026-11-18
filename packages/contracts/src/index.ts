@@ -23,7 +23,9 @@ z.config(z.locales.es());
 
 export * from './auth.js';
 export * from './comunes.js';
+export * from './cuenta.js';
 export * from './dominio.js';
 export * from './errores.js';
+export * from './miembros.js';
 export * from './paginacion.js';
 export * from './salud.js';

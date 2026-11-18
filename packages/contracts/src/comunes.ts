@@ -28,6 +28,7 @@ export const SLUGS_RESERVADOS: readonly string[] = [
   'ingresar',
   'registro',
   'recuperar',
+  'restablecer',
   'verificar',
   'invitacion',
   'reserva',

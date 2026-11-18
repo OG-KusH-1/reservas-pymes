@@ -4,6 +4,7 @@ import { eq } from 'drizzle-orm';
 import request from 'supertest';
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { z } from 'zod';
+import { Publico } from '../src/auth/auth.decorators.js';
 import { createZodDto } from '../src/common/zod/zod-dto.js';
 import { usuarios } from '../src/db/schema.js';
 import { crearAppDePrueba, limpiarBaseDeDatos, type AppDePrueba } from './app.js';
@@ -23,6 +24,7 @@ class EcoDto extends createZodDto(
 
 let prueba: AppDePrueba;
 
+@Publico()
 @Controller('prueba')
 class PruebaController {
   @Post('eco')

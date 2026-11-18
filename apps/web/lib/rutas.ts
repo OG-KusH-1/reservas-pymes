@@ -18,6 +18,10 @@ export const RUTAS = {
   estado: '/estado',
   ingresar: '/ingresar',
   registro: '/registro',
+  recuperar: '/recuperar',
+  restablecer: '/restablecer',
+  verificar: '/verificar',
+  invitacion: '/invitacion',
   panel: {
     inicio: '/panel',
     agenda: '/panel/agenda',
