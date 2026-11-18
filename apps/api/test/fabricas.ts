@@ -4,8 +4,10 @@ import { COOKIE_SESION } from '../src/app.setup.js';
 import { hashTokenSesion } from '../src/auth/session.service.js';
 import type { Database } from '../src/db/client.js';
 import {
+  bloqueos,
   clientes,
   empresas,
+  horarios,
   miembros,
   profesionales,
   profesionalesServicios,
@@ -113,6 +115,43 @@ export async function asignarServicioAProfesional(
   datos: Insercion<typeof profesionalesServicios>,
 ) {
   return primera(await db.insert(profesionalesServicios).values(datos).returning());
+}
+
+/** Crea un tramo horario semanal para un profesional (lunes 09:00–13:00 por defecto). */
+export async function crearHorario(
+  db: Database,
+  datos: Pick<Insercion<typeof horarios>, 'empresaId' | 'profesionalId'> &
+    Partial<Insercion<typeof horarios>>,
+) {
+  return primera(
+    await db
+      .insert(horarios)
+      .values({
+        diaSemana: 1,
+        horaInicio: '09:00',
+        horaFin: '13:00',
+        activo: true,
+        ...datos,
+      })
+      .returning(),
+  );
+}
+
+/** Crea un bloqueo puntual (de empresa si `profesionalId` es `null` o se omite). */
+export async function crearBloqueo(
+  db: Database,
+  datos: Pick<Insercion<typeof bloqueos>, 'empresaId' | 'inicio' | 'fin'> &
+    Partial<Insercion<typeof bloqueos>>,
+) {
+  return primera(
+    await db
+      .insert(bloqueos)
+      .values({
+        profesionalId: null,
+        ...datos,
+      })
+      .returning(),
+  );
 }
 
 export async function crearCliente(

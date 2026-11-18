@@ -53,10 +53,13 @@
 | ------------------------------------------------------- | ----------- | -------- |
 | T17 API de servicios (O1)                               | Antigravity | aprobada |
 | T18 API de profesionales y asignación de servicios (O1) | Antigravity | aprobada |
+| T19 API de horarios semanales y bloqueos (O2)           | Antigravity | asignada |
+| T20 Web: servicios (O2)                                 | Antigravity | asignada |
+| T21 Web: profesionales (O2)                             | Antigravity | asignada |
 
 ## Pendientes y avisos
 
-- **Siguiente paso:** preparar la oleada **F2-O2** según `docs/tareas/README.md` (paso 1).
+- **Siguiente paso:** ejecutar en paralelo la oleada **F2-O2** (`T19`, `T20`, `T21`) según `docs/tareas/README.md` (paso 2).
 - **Remoto sin configurar.** El repositorio local tiene el historial y los
   commits de la Fase 0, pero falta enlazarlo con `reservas-pymes` y hacer el
   primer `push` (comandos en el `README.md`, sección «Repositorio»).
@@ -97,3 +100,4 @@
 | 2026-11-18 | Revisión de la oleada F1-O3 (T15 y T16): ambas aprobadas sin críticos ni importantes. Fase 1 (Identidad y empresa) terminada.                                                                                                                                                              |
 | 2026-11-18 | Preparada la oleada F2-O1 (T17, T18): contratos `servicios.ts` y `profesionales.ts`, `booleanoConsultaSchema`, utilidad `apps/api/src/common/paginacion.ts`, fábrica `asignarServicioAProfesional`, módulos base en `AppModule` y fichas `T17.md` y `T18.md`.                              |
 | 2026-11-18 | Revisión de la oleada F2-O1 (T17 y T18): ambas aprobadas sin críticos ni importantes.                                                                                                                                                                                                      |
+| 2026-11-18 | Preparada la oleada F2-O2 (T19, T20, T21): contrato `disponibilidad.ts`, módulos base `HorariosModule` y `BloqueosModule` en `AppModule`, fábricas `crearHorario` y `crearBloqueo`, rutas de profesionales y horarios en `RUTAS.panel`, y fichas `T19.md`, `T20.md` y `T21.md`.            |

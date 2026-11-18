@@ -29,6 +29,8 @@ export const RUTAS = {
     clientes: '/panel/clientes',
     servicios: '/panel/servicios',
     equipo: '/panel/equipo',
+    profesionales: '/panel/equipo/profesionales',
+    horarios: '/panel/equipo/horarios',
     configuracion: '/panel/configuracion',
   },
   /** Página pública de reservas de una empresa. */

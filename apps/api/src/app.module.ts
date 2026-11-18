@@ -5,6 +5,7 @@ import { APP_FILTER, APP_GUARD, APP_PIPE } from '@nestjs/core';
 import { ThrottlerGuard, ThrottlerModule, seconds } from '@nestjs/throttler';
 import { LoggerModule } from 'nestjs-pino';
 import { AuthModule } from './auth/auth.module.js';
+import { BloqueosModule } from './bloqueos/bloqueos.module.js';
 import { OriginGuard } from './auth/origin.guard.js';
 import { RolesGuard } from './auth/roles.guard.js';
 import { SessionGuard } from './auth/session.guard.js';
@@ -15,6 +16,7 @@ import { DatabaseModule } from './db/database.module.js';
 import { CuentaModule } from './cuenta/cuenta.module.js';
 import { EmpresaModule } from './empresa/empresa.module.js';
 import { HealthModule } from './health/health.module.js';
+import { HorariosModule } from './horarios/horarios.module.js';
 import { MailModule } from './mail/mail.module.js';
 import { MiembrosModule } from './miembros/miembros.module.js';
 import { ProfesionalesModule } from './profesionales/profesionales.module.js';
@@ -106,6 +108,8 @@ import { ServiciosModule } from './servicios/servicios.module.js';
     EmpresaModule,
     ServiciosModule,
     ProfesionalesModule,
+    HorariosModule,
+    BloqueosModule,
   ],
   providers: [
     // Orden estricto de los guards globales:
