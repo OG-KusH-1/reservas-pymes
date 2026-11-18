@@ -1,10 +1,15 @@
 import { Module } from '@nestjs/common';
+import { ServiciosController } from './servicios.controller.js';
+import { ServiciosService } from './servicios.service.js';
 
 /**
  * Módulo del catálogo de servicios (`/api/v1/servicios`).
  *
- * Registrado en `AppModule` como base común de la oleada F2-O1; el
- * controlador y el servicio se implementan en T17.
+ * Agrupa el controlador y el servicio que exponen el CRUD multiempresa de
+ * servicios, registrado en `AppModule`.
  */
-@Module({})
+@Module({
+  controllers: [ServiciosController],
+  providers: [ServiciosService],
+})
 export class ServiciosModule {}
