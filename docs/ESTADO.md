@@ -27,7 +27,7 @@
 | ----------------------------- | ----------------------- | ----------------------------------------------- |
 | 0 Infraestructura             | **Terminada** (T1–T9)   | Verificación completa en verde; ver bitácora    |
 | 1 Identidad y empresa         | **Terminada** (T10–T16) | O1–O3 aprobadas; verificación completa en verde |
-| 2 Catálogo y disponibilidad   | **En curso**            | O1 aprobada (T17–T18)                           |
+| 2 Catálogo y disponibilidad   | **En curso**            | O1–O2 aprobadas (T17–T21)                       |
 | 3 Reservas y agenda           | Pendiente               | —                                               |
 | 4 Reserva pública             | Pendiente               | —                                               |
 | 5 Notificaciones              | Pendiente               | —                                               |
@@ -53,13 +53,13 @@
 | ------------------------------------------------------- | ----------- | -------- |
 | T17 API de servicios (O1)                               | Antigravity | aprobada |
 | T18 API de profesionales y asignación de servicios (O1) | Antigravity | aprobada |
-| T19 API de horarios semanales y bloqueos (O2)           | Antigravity | asignada |
-| T20 Web: servicios (O2)                                 | Antigravity | asignada |
-| T21 Web: profesionales (O2)                             | Antigravity | asignada |
+| T19 API de horarios semanales y bloqueos (O2)           | Antigravity | aprobada |
+| T20 Web: servicios (O2)                                 | Antigravity | aprobada |
+| T21 Web: profesionales (O2)                             | Antigravity | aprobada |
 
 ## Pendientes y avisos
 
-- **Siguiente paso:** ejecutar en paralelo la oleada **F2-O2** (`T19`, `T20`, `T21`) según `docs/tareas/README.md` (paso 2).
+- **Siguiente paso:** preparar la oleada **F2-O3** (`T22`, `T23` — motor de disponibilidad y web de horarios/bloqueos) según `docs/tareas/README.md` (paso 1).
 - **Remoto sin configurar.** El repositorio local tiene el historial y los
   commits de la Fase 0, pero falta enlazarlo con `reservas-pymes` y hacer el
   primer `push` (comandos en el `README.md`, sección «Repositorio»).
@@ -77,6 +77,10 @@
   `apps/web/components/panel/menu-usuario.spec.tsx` y de cambio de rol en
   `apps/web/components/equipo/gestion-equipo.spec.tsx`; cubrir
   `/panel/configuracion` en E2E cuando el entorno E2E levante ambos servidores.
+- **Menores de F2-O2:** añadir `debounce` a la búsqueda de `GestionProfesionales`,
+  soportar más de 100 servicios en `useServiciosParaProfesionales` si creciera el
+  catálogo y cubrir `/panel/servicios` y `/panel/equipo/profesionales` en E2E
+  cuando el entorno E2E levante ambos servidores.
 
 ## Cambios respecto del plan aprobado
 
@@ -101,3 +105,4 @@
 | 2026-11-18 | Preparada la oleada F2-O1 (T17, T18): contratos `servicios.ts` y `profesionales.ts`, `booleanoConsultaSchema`, utilidad `apps/api/src/common/paginacion.ts`, fábrica `asignarServicioAProfesional`, módulos base en `AppModule` y fichas `T17.md` y `T18.md`.                              |
 | 2026-11-18 | Revisión de la oleada F2-O1 (T17 y T18): ambas aprobadas sin críticos ni importantes.                                                                                                                                                                                                      |
 | 2026-11-18 | Preparada la oleada F2-O2 (T19, T20, T21): contrato `disponibilidad.ts`, módulos base `HorariosModule` y `BloqueosModule` en `AppModule`, fábricas `crearHorario` y `crearBloqueo`, rutas de profesionales y horarios en `RUTAS.panel`, y fichas `T19.md`, `T20.md` y `T21.md`.            |
+| 2026-11-18 | Revisión de la oleada F2-O2 (T19, T20 y T21): todas aprobadas sin críticos ni importantes.                                                                                                                                                                                                 |
