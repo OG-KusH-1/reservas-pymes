@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { CuentaModule } from '../cuenta/cuenta.module.js';
 import { AuthController } from './auth.controller.js';
 import { AuthService } from './auth.service.js';
 import { OriginGuard } from './origin.guard.js';
@@ -14,6 +15,7 @@ import { SessionService } from './session.service.js';
  * globalmente mediante `APP_GUARD`.
  */
 @Module({
+  imports: [CuentaModule],
   controllers: [AuthController],
   providers: [AuthService, PasswordService, SessionService, OriginGuard, SessionGuard, RolesGuard],
   exports: [SessionService, OriginGuard, SessionGuard, RolesGuard],

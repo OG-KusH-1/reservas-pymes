@@ -2,6 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import type { IniciarSesion, Registro, Sesion } from '@portfolio/contracts';
 import { and, asc, eq } from 'drizzle-orm';
 import { AppException } from '../common/errors/app.exception.js';
+import { CuentaService } from '../cuenta/cuenta.service.js';
 import type { Database } from '../db/client.js';
 import { DRIZZLE } from '../db/database.module.js';
 import { empresas, miembros, usuarios } from '../db/schema.js';
@@ -37,6 +38,7 @@ export class AuthService {
     @Inject(DRIZZLE) private readonly db: Database,
     private readonly passwordService: PasswordService,
     private readonly sessionService: SessionService,
+    private readonly cuentaService: CuentaService,
   ) {}
 
   /**
@@ -103,6 +105,7 @@ export class AuthService {
     }
 
     const token = await this.sessionService.crear(creado.usuario.id, creado.empresa.id, contexto);
+    await this.cuentaService.enviarVerificacionCorreo(creado.usuario.id);
 
     return {
       token,
