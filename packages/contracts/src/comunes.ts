@@ -88,3 +88,13 @@ export const zonaHorariaSchema = z
 
 /** Día de la semana: 0 = domingo … 6 = sábado (igual que `Date.getDay()`). */
 export const diaSemanaSchema = z.number().int().min(0).max(6);
+
+/**
+ * Booleano enviado como parámetro de consulta en la URL (`?activo=true` o
+ * `?activo=false`). Evita `z.coerce.boolean()`, que convierte `'false'` en
+ * `true` por ser una cadena no vacía.
+ */
+export const booleanoConsultaSchema = z.union([
+  z.boolean(),
+  z.enum(['true', 'false']).transform((valor) => valor === 'true'),
+]);

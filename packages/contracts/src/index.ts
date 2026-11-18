@@ -29,4 +29,6 @@ export * from './empresa.js';
 export * from './errores.js';
 export * from './miembros.js';
 export * from './paginacion.js';
+export * from './profesionales.js';
 export * from './salud.js';
+export * from './servicios.js';

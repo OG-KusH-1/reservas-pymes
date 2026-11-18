@@ -17,6 +17,8 @@ import { EmpresaModule } from './empresa/empresa.module.js';
 import { HealthModule } from './health/health.module.js';
 import { MailModule } from './mail/mail.module.js';
 import { MiembrosModule } from './miembros/miembros.module.js';
+import { ProfesionalesModule } from './profesionales/profesionales.module.js';
+import { ServiciosModule } from './servicios/servicios.module.js';
 
 /**
  * Módulo raíz de la API.
@@ -102,6 +104,8 @@ import { MiembrosModule } from './miembros/miembros.module.js';
     MiembrosModule,
     CuentaModule,
     EmpresaModule,
+    ServiciosModule,
+    ProfesionalesModule,
   ],
   providers: [
     // Orden estricto de los guards globales:

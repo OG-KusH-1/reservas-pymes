@@ -1,7 +1,12 @@
 import { describe, expect, it } from 'vitest';
 import {
+  actualizarServicioSchema,
+  booleanoConsultaSchema,
+  colorServicioSchema,
   consultaPaginadaSchema,
+  consultaServiciosSchema,
   correoSchema,
+  crearServicioSchema,
   ESTADOS_RESERVA,
   horaSchema,
   LIMITE_PAGINA_PREDETERMINADO,
@@ -45,5 +50,32 @@ describe('paginación', () => {
     expect(consultaPaginadaSchema.parse({}).limite).toBe(LIMITE_PAGINA_PREDETERMINADO);
     expect(consultaPaginadaSchema.parse({ limite: '50' }).limite).toBe(50);
     expect(consultaPaginadaSchema.safeParse({ limite: '1000' }).success).toBe(false);
+  });
+
+  it('interpreta booleanos de consulta sin convertir "false" en true', () => {
+    expect(booleanoConsultaSchema.parse('true')).toBe(true);
+    expect(booleanoConsultaSchema.parse('false')).toBe(false);
+    expect(booleanoConsultaSchema.parse(false)).toBe(false);
+    expect(consultaServiciosSchema.parse({ activo: 'false' }).activo).toBe(false);
+  });
+});
+
+describe('servicios', () => {
+  it('valida el formato de color hexadecimal #RRGGBB', () => {
+    expect(colorServicioSchema.safeParse('#0ea5e9').success).toBe(true);
+    expect(colorServicioSchema.safeParse('0ea5e9').success).toBe(false);
+    expect(colorServicioSchema.safeParse('#fff').success).toBe(false);
+  });
+
+  it('aplica valores por defecto al crear y exige al menos un campo al actualizar', () => {
+    const creado = crearServicioSchema.parse({ nombre: 'Corte clásico' });
+    expect(creado.duracionMinutos).toBe(30);
+    expect(creado.margenPosteriorMinutos).toBe(0);
+    expect(creado.precio).toBe(0);
+    expect(creado.visiblePublico).toBe(true);
+    expect(creado.activo).toBe(true);
+
+    expect(actualizarServicioSchema.safeParse({}).success).toBe(false);
+    expect(actualizarServicioSchema.safeParse({ activo: false }).success).toBe(true);
   });
 });

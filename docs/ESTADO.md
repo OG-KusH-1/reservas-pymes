@@ -27,7 +27,7 @@
 | ----------------------------- | ----------------------- | ----------------------------------------------- |
 | 0 Infraestructura             | **Terminada** (T1–T9)   | Verificación completa en verde; ver bitácora    |
 | 1 Identidad y empresa         | **Terminada** (T10–T16) | O1–O3 aprobadas; verificación completa en verde |
-| 2 Catálogo y disponibilidad   | Pendiente               | —                                               |
+| 2 Catálogo y disponibilidad   | **En curso**            | O1 asignada (T17–T18)                           |
 | 3 Reservas y agenda           | Pendiente               | —                                               |
 | 4 Reserva pública             | Pendiente               | —                                               |
 | 5 Notificaciones              | Pendiente               | —                                               |
@@ -47,10 +47,17 @@
 | T15 API y web de configuración de la empresa (O3)               | Antigravity | aprobada |
 | T16 Web: equipo, invitaciones, recuperación y verificación (O3) | Antigravity | aprobada |
 
+## Fase 2: tareas y ejecutor
+
+| Tarea                                                   | Ejecutor    | Estado   |
+| ------------------------------------------------------- | ----------- | -------- |
+| T17 API de servicios (O1)                               | Antigravity | asignada |
+| T18 API de profesionales y asignación de servicios (O1) | Antigravity | asignada |
+
 ## Pendientes y avisos
 
-- **Siguiente paso:** preparar la oleada **F2-O1** según `docs/tareas/README.md`
-  (paso 1) y `docs/tareas/BACKLOG.md`.
+- **Siguiente paso:** ejecutar en paralelo la oleada **F2-O1** (`T17` y `T18`)
+  según `docs/tareas/README.md` (paso 2) y luego revisarla.
 - **Remoto sin configurar.** El repositorio local tiene el historial y los
   commits de la Fase 0, pero falta enlazarlo con `reservas-pymes` y hacer el
   primer `push` (comandos en el `README.md`, sección «Repositorio»).
@@ -89,3 +96,4 @@
 | 2026-11-18 | Revisión de la oleada F1-O2 (T12, T13 y T14): todas aprobadas sin críticos ni importantes.                                                                                                                                                                                                 |
 | 2026-11-18 | Preparada la oleada F1-O3 (T15, T16): contrato `empresa.ts`, módulo base `EmpresaModule` en `AppModule` y fichas `T15.md` y `T16.md`.                                                                                                                                                      |
 | 2026-11-18 | Revisión de la oleada F1-O3 (T15 y T16): ambas aprobadas sin críticos ni importantes. Fase 1 (Identidad y empresa) terminada.                                                                                                                                                              |
+| 2026-11-18 | Preparada la oleada F2-O1 (T17, T18): contratos `servicios.ts` y `profesionales.ts`, `booleanoConsultaSchema`, utilidad `apps/api/src/common/paginacion.ts`, fábrica `asignarServicioAProfesional`, módulos base en `AppModule` y fichas `T17.md` y `T18.md`.                              |

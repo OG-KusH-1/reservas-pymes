@@ -8,6 +8,7 @@ import {
   empresas,
   miembros,
   profesionales,
+  profesionalesServicios,
   reservas,
   servicios,
   sesiones,
@@ -104,6 +105,14 @@ export async function crearProfesional(
       .values({ nombre: `Profesional ${sufijo()}`, ...datos })
       .returning(),
   );
+}
+
+/** Asigna un servicio a un profesional en `profesionales_servicios`. */
+export async function asignarServicioAProfesional(
+  db: Database,
+  datos: Insercion<typeof profesionalesServicios>,
+) {
+  return primera(await db.insert(profesionalesServicios).values(datos).returning());
 }
 
 export async function crearCliente(
