@@ -1,8 +1,9 @@
 import type { Metadata } from 'next';
-import { EnConstruccion } from '@/components/en-construccion';
+import { InicioPanel } from '@/components/panel/inicio-panel';
 
 export const metadata: Metadata = { title: 'Panel' };
 
+/** Página principal del panel interno con bienvenida y accesos rápidos por rol. */
 export default function PanelPage() {
-  return <EnConstruccion titulo="Panel" tarea="T14" />;
+  return <InicioPanel />;
 }
